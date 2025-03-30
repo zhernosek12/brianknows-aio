@@ -3,6 +3,8 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
+from src.modules import global_constants as cst
+
 
 def write_file(wallet: str, chain: str, action: str, status: int):
     root_path = Path(__file__).resolve().parent.parent.parent
