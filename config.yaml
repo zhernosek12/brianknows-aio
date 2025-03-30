@@ -1,0 +1,45 @@
+max_gas_price_eth_gwei_bridge_action: 100
+max_gas_price_eth_gwei_usual_actions: 0.80  # Base
+
+shuffle_keys: true
+proxy_mode: no_proxy  # no_proxy, use_proxy
+
+rpc_base: https://base.publicnode.com/
+
+chains: ["base"]
+
+actions_repeat: [1, 2]
+
+prompts:
+  - "swap 0.0002 eth for USDC on base chain"
+  - "swap all USDC to ETH on base chain"
+
+keys_file_path: keys.txt
+
+step_executor:
+  rpc_base: ${rpc_base}
+  actions_repeat: ${actions_repeat}
+  prompts: ${prompts}
+  chains: ${chains}
+
+  wait_before_after_authorization_sec: [5, 11]
+  wait_before_action_sec: [12, 55]
+  timeout_between_wallets_src: [340, 840]
+
+base_web3_transaction_executor:
+  gas_price_multiplier: 1.15
+  balance_check_interval: 30
+  transaction_wait_attempts: -1
+  transaction_wait_retry_interval: 10
+
+  max_gas_price_eth_gwei_bridge_action: ${max_gas_price_eth_gwei_bridge_action}
+  max_gas_price_eth_gwei_usual_actions: ${max_gas_price_eth_gwei_usual_actions}
+
+logs:
+  dir_path: logs/
+  file_path: ${logs.dir_path}/${now:%Y-%m-%d}.log
+  level: INFO
+  telegram:
+    enabled: False
+    token: ""
+    chat_id: 0

@@ -1,0 +1,16 @@
+hydra-core
+eth_account==0.10.0
+web3==6.13.0
+pydantic
+eth_utils
+asyncio
+aiohttp==3.9.5
+python-dotenv
+ccxt
+loguru
+python-telegram-bot
+tqdm
+fake-useragent
+aioimaplib
+certifi==2024.8.30
+yarl

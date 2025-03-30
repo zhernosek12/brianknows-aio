@@ -1,0 +1,7 @@
+sessions
+logs
+.git
+.venv
+.idea
+.keys.txt
+.config.yaml
