@@ -13,18 +13,22 @@ wrap_eth_percent: [10, 20]
 
 chains: ["base"]
 
-actions_repeat: [1, 5]
+actions_repeat: [4, 10]
 
 prompts:
   - "swap {swap_eth_amount} eth for USDC on base chain"
+  - "swap {swap_eth_amount} eth for USDT on base chain"
+  - "swap {swap_eth_amount} eth for DAI on base chain"
   - "swap {swap_eth_percent} eth for USDC on base chain"
+  - "swap {swap_eth_percent} eth for USDT on base chain"
+  - "swap {swap_eth_percent} eth for DAI on base chain"
   - "swap all USDC to ETH on base chain"
   - "swap all USDT to ETH on base chain"
   - "swap all DAI to ETH on base chain"
   - "swap all USDC, USDT, DAI to ETH on base chain"
-  - "bridge {bridge_eth_percent}% of eth to optimism and {bridge_eth_percent}% to arbitrum"
-  - "bridge {bridge_eth_percent}% of eth to optimism"
-  - "bridge {bridge_eth_percent}% of eth to arbitrum"
+  - "bridge {bridge_eth_percent}% of eth to optimism chain and {bridge_eth_percent}% to arbitrum chain"
+  - "bridge {bridge_eth_percent}% of eth to optimism chain"
+  - "bridge {bridge_eth_percent}% of eth to arbitrum chain"
   - "bridge all eth from optimism to base chain"
   - "bridge all eth from arbitrum to base chain"
   - "Wrap {wrap_eth_percent}% eth on base chain"
