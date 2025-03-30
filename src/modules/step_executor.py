@@ -27,6 +27,11 @@ class StepExecutorConfig(BaseModel):
     prompts: List
     chains: List
 
+    swap_eth_amount: tuple[float, float]
+    swap_eth_percent: tuple[int, int]
+    bridge_eth_percent: tuple[int, int]
+    wrap_eth_percent: tuple[int, int]
+
     wait_before_after_authorization_sec: tuple[int, int]
     wait_before_action_sec: tuple[int, int]
     timeout_between_wallets_src: tuple[int, int]
@@ -123,8 +128,15 @@ class StepExecutor:
         for _ in range(random.randint(*self.config.actions_repeat)):
             action = random.choice(self.config.prompts)
 
-            # filter...
-            # rand int ???
+            swap_eth_amount = round(random.uniform(*self.config.swap_eth_amount), 6)
+            swap_eth_percent = random.randint(*self.config.swap_eth_percent)
+            bridge_eth_percent = random.randint(*self.config.bridge_eth_percent)
+            wrap_eth_percent = random.randint(*self.config.wrap_eth_percent)
+
+            action = action.replace("{swap_eth_amount}", str(swap_eth_amount))
+            action = action.replace("{swap_eth_percent}", str(swap_eth_percent))
+            action = action.replace("{bridge_eth_percent}", str(bridge_eth_percent))
+            action = action.replace("{wrap_eth_percent}", str(wrap_eth_percent))
 
             actions.append(action)
 

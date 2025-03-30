@@ -192,7 +192,7 @@ class BrianknowsClient:
                         await transaction_executor.send_contract_transaction(
                             tx_data=step["data"],
                             to_addr=step["to"],
-                            amount_eth=Web3.from_wei(int(step["value"]), "ether"),
+                            amount_eth=step["value"],
                         )
                         return True
                     except Exception as e:

@@ -6,13 +6,31 @@ proxy_mode: no_proxy  # no_proxy, use_proxy
 
 rpc_base: https://base.publicnode.com/
 
+swap_eth_amount: [0.0003, 0.0006]
+swap_eth_percent: [15, 35]
+bridge_eth_percent: [10, 20]
+wrap_eth_percent: [10, 20]
+
 chains: ["base"]
 
-actions_repeat: [1, 2]
+actions_repeat: [1, 5]
 
 prompts:
-  - "swap 0.0002 eth for USDC on base chain"
+  - "swap {swap_eth_amount} eth for USDC on base chain"
+  - "swap {swap_eth_percent} eth for USDC on base chain"
   - "swap all USDC to ETH on base chain"
+  - "swap all USDT to ETH on base chain"
+  - "swap all DAI to ETH on base chain"
+  - "swap all USDC, USDT, DAI to ETH on base chain"
+  - "bridge {bridge_eth_percent}% of eth to optimism and {bridge_eth_percent}% to arbitrum"
+  - "bridge {bridge_eth_percent}% of eth to optimism"
+  - "bridge {bridge_eth_percent}% of eth to arbitrum"
+  - "bridge all eth from optimism to base chain"
+  - "bridge all eth from arbitrum to base chain"
+  - "Wrap {wrap_eth_percent}% eth on base chain"
+  - "Unwrap {wrap_eth_percent}% eth on base chain"
+  - "Unwrap all eth"
+
 
 keys_file_path: keys.txt
 
@@ -21,6 +39,10 @@ step_executor:
   actions_repeat: ${actions_repeat}
   prompts: ${prompts}
   chains: ${chains}
+
+  swap_eth_amount: ${swap_eth_amount}
+  swap_eth_percent: ${swap_eth_percent}
+  bridge_eth_percent: ${bridge_eth_percent}
 
   wait_before_after_authorization_sec: [5, 11]
   wait_before_action_sec: [12, 55]
