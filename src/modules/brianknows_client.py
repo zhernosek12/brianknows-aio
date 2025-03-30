@@ -162,7 +162,10 @@ class BrianknowsClient:
                     break
 
                 if response_data['response'].status == 500:
-                    logger.warning(f"Данное действие невозможно выполнить: {response_data['data']['error']}")
+                    message = response_data['data']
+                    if "error" in response_data['data']:
+                        message = response_data['data']['error']
+                    logger.warning(f"Данное действие невозможно выполнить: {message}")
                     return False
 
             except Exception as e:
