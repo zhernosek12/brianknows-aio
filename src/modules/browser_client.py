@@ -33,8 +33,11 @@ class BrowserClient:
         if self.proxy:
             kwargs["proxy"] = self.proxy
 
+        if "timeout" not in kwargs:
+            kwargs["timeout"] = aiohttp.ClientTimeout(total=60)
+
         async with self.session.request(method=method, url=url, **kwargs) as response:
-            response.raise_for_status()
+            #response.raise_for_status()
             result = {'response': response}
             if response.content_type == "application/json":
                 result['data'] = await response.json()

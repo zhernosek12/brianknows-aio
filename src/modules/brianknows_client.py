@@ -145,15 +145,30 @@ class BrianknowsClient:
             "query": query
         }
 
-        response_data = await self.browser_client.request(
-            url="https://www.brianknows.org/api/builds",
-            method="POST",
-            headers=headers,
-            proxy=self.proxy,
-            json=payload,
-        )
+        results = []
 
-        results = response_data['data']['result']
+        for retry in range(self.max_retry):
+            try:
+                response_data = await self.browser_client.request(
+                    url="https://www.brianknows.org/api/builds",
+                    method="POST",
+                    headers=headers,
+                    proxy=self.proxy,
+                    json=payload
+                )
+
+                if response_data['response'].status == 200:
+                    results = response_data['data']['result']
+                    break
+
+                if response_data['response'].status == 500:
+                    logger.warning(f"Данное действие невозможно выполнить: {response_data['data']['error']}")
+                    return False
+
+            except Exception as e:
+                logger.error("Ошибка" + str(e))
+
+            await wait(10)
 
         if len(results) == 0:
             logger.error("Ошибка при сборке запроса...")
@@ -171,7 +186,6 @@ class BrianknowsClient:
                 logger.info("Описания действия от Brianknows: " + data_description)
 
                 for retry in range(self.max_retry):
-
                     logger.info(f"Выполняем действие: {action} по {self.address}... ({retry}/{self.max_retry})")
 
                     try:
@@ -182,7 +196,7 @@ class BrianknowsClient:
                         )
                         return True
                     except Exception as e:
-                        logger.error("Ошибка при выполнении действия...")
+                        logger.error("Ошибка при выполнении действия..." + e)
                         pass
 
                     await wait(5)
