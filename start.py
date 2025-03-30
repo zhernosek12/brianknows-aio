@@ -9,4 +9,4 @@ if sys.platform == 'win32':
 
 if __name__ == "__main__":
     force_ipv4()
-    asyncio.run(main("config"))
+    asyncio.run(main(".config"))

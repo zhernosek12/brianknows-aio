@@ -2,12 +2,14 @@ import random
 import json
 
 from loguru import logger
-from web3 import Web3
 from eth_account import Account
 from eth_account.messages import encode_defunct
 from datetime import datetime
+from decimal import Decimal
+from web3 import Web3
 
 from src.utils.progress_bar import wait
+from src.modules.exceptions import InsufficientFunds
 
 
 class BrianknowsClient:
@@ -107,7 +109,8 @@ class BrianknowsClient:
 
     async def authorized(self):
         try:
-            await self.me()
+            if await self.me() is None:
+                return False
             return True
         except Exception as e:
             if "Unauthorized" in str(e):
@@ -192,14 +195,22 @@ class BrianknowsClient:
                     logger.info(f"Выполняем действие: {action} по {self.address}... ({retry}/{self.max_retry})")
 
                     try:
+                        if step["value"][:2] == "0x":
+                            amount_eth = Web3.from_wei(int(step["value"], 16), "ether")
+                        else:
+                            amount_eth = Web3.from_wei(int(step["value"]), "ether")
+
                         await transaction_executor.send_contract_transaction(
                             tx_data=step["data"],
-                            to_addr=step["to"],
-                            amount_eth=step["value"],
+                            to_addr=Web3.to_checksum_address(step["to"]),
+                            amount_eth=Decimal(amount_eth),
                         )
                         return True
+                    except InsufficientFunds:
+                        logger.warning("Недостаточно баланса для выполнения данного действия...")
+                        return False
                     except Exception as e:
-                        logger.error("Ошибка при выполнении действия..." + e)
-                        pass
+                        logger.error("Ошибка при выполнении действия...")
+                        logger.exception(e)
 
                     await wait(5)

@@ -148,7 +148,6 @@ class StepExecutor:
                 logger.info(f"Успешно выполнено {action}!")
                 status = 1
             else:
-                logger.warning(f"Завершено с ошибкой: {action}!")
                 status = 0
 
             write_file(address, chain, action, status)
