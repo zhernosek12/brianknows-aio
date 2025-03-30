@@ -107,7 +107,8 @@ class BrianknowsClient:
 
     async def authorized(self):
         try:
-            await self.me()
+            if await self.me() is None:
+                return False
             return True
         except Exception as e:
             if "Unauthorized" in str(e):
