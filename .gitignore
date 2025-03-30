@@ -5,3 +5,4 @@ logs
 .idea
 .keys.txt
 .config.yaml
+results.csv
