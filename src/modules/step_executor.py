@@ -131,7 +131,7 @@ class StepExecutor:
         random.shuffle(actions)
 
         for action in actions:
-            logger.info(f"Запускаем {action}...")
+            logger.info(f"Запускаем действие '{action}'...")
             if await brianknows_client.build_and_run_promt(chain, action):
                 logger.info(f"Успешно выполнено {action}!")
                 status = 1

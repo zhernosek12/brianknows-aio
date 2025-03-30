@@ -21,6 +21,6 @@ def write_file(wallet: str, chain: str, action: str, status: int):
     ]
 
     with open(str(fila_path), "a", newline="") as file:
-        writer = csv.DictWriter(file, cst.CSV_COLUMNS)
+        writer = csv.DictWriter(file, cst.CSV_COLUMNS, quoting=csv.QUOTE_NONNUMERIC)
         writer.writerows(data)
         file.close()
