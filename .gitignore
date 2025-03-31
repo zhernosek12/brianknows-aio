@@ -1,5 +1,9 @@
-sessions
-logs
+sessions/
+logs/
+__pycache__/
+modules/__pycache__/
+modules/email/
+utils/__pycache__/
 .git
 .venv
 .idea

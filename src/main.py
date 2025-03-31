@@ -9,6 +9,7 @@ from src.modules.step_executor import StepExecutor
 from src.utils.hydra import load_hydra_config
 from src.utils.logger import setup_logging
 from src.utils.proxy import check_proxy
+from src.utils.logo import logo_print
 
 
 async def run_account(
@@ -71,6 +72,6 @@ async def main(config_name: str = "config") -> None:
     config = Config(**config_hydra)
     await setup_logging(config.logs)
 
-    logger.info(f"Начинаем работу...")
+    logo_print()
 
     await run_account(config)
