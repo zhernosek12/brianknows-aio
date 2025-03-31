@@ -7,6 +7,7 @@ from eth_account.messages import encode_defunct
 from datetime import datetime
 from decimal import Decimal
 from web3 import Web3
+from eth_utils import to_hex
 
 from src.utils.progress_bar import wait
 from src.modules.exceptions import InsufficientFunds
@@ -136,6 +137,28 @@ class BrianknowsClient:
                 data = json.loads(data)
             return data
 
+    async def send_points(self, tx_hash, action, chain_id):
+        headers = self.headers
+        headers['Content-Type'] = 'application/json'
+        headers['Accept'] = 'application/json'
+
+        payload = {
+            "txHash": tx_hash,
+            "action": action,
+            "chainId": chain_id
+        }
+
+        response_data = await self.browser_client.request(
+            url="https://www.brianknows.org/api/points",
+            method="POST",
+            headers=headers,
+            proxy=self.proxy,
+            json=payload,
+        )
+
+        if response_data['response'].status == 200:
+            return True
+
     async def build_and_run_promt(self, chain, query):
 
         transaction_executor = self.transaction_executors[chain]
@@ -189,6 +212,7 @@ class BrianknowsClient:
             data_description = data['description']
             data_steps = data['steps']
             success = False
+            tx_hash = None
 
             for step in data_steps:
                 logger.info("Описания действия от Brianknows: " + data_description)
@@ -202,7 +226,7 @@ class BrianknowsClient:
                         else:
                             amount_eth = Web3.from_wei(int(step["value"]), "ether")
 
-                        await transaction_executor.send_contract_transaction(
+                        status, tx_hash = await transaction_executor.send_contract_transaction(
                             tx_data=step["data"],
                             to_addr=Web3.to_checksum_address(step["to"]),
                             amount_eth=Decimal(amount_eth),
@@ -218,5 +242,8 @@ class BrianknowsClient:
                     await wait(5)
 
                 await wait(random.randint(6, 23))
+
+            if success and await self.send_points(to_hex(tx_hash), action, chain_id):
+                logger.info("Транзакция на поинты успешно отправлена!")
 
             return success

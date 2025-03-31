@@ -10,6 +10,7 @@ swap_eth_amount: [0.0003, 0.0006]
 swap_eth_percent: [2, 5]
 bridge_eth_percent: [1, 3]
 wrap_eth_percent: [1, 20]
+deposit_dollars_of_eth: [1, 3]
 
 chains: ["base"]
 
@@ -34,6 +35,10 @@ prompts:
   - "bridge all eth from optimism to base chain"
   - "bridge all eth from arbitrum to base chain"
   - "Wrap {wrap_eth_percent}% of my eth"
+  - "deposit {deposit_dollars_of_eth} dollars of eth into Rocket Pool protocol"
+  - "withdraw all eth from Rocket Pool"
+  - "stake {deposit_dollars_of_eth} dollars of eth on lido protocol"
+  - "unstake all eth from lido protocol"
   - "Unwrap {wrap_eth_percent}% of my eth"
   - "Unwrap all eth"
 

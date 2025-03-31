@@ -33,6 +33,7 @@ class StepExecutorConfig(BaseModel):
     swap_eth_percent: tuple[int, int]
     bridge_eth_percent: tuple[int, int]
     wrap_eth_percent: tuple[int, int]
+    deposit_dollars_of_eth: tuple[int, int]
 
     wait_before_after_authorization_sec: tuple[int, int]
     wait_before_action_sec: tuple[int, int]
@@ -168,12 +169,14 @@ class StepExecutor:
             bridge_eth_percent = random.randint(*self.config.bridge_eth_percent)
             wrap_eth_percent = random.randint(*self.config.wrap_eth_percent)
             random_virtual_token = random.choice(virtuals_tokens)
+            deposit_dollars_of_eth = random.randint(*self.config.deposit_dollars_of_eth)
 
             action = action.replace("{swap_eth_amount}", str(swap_eth_amount))
             action = action.replace("{swap_eth_percent}", str(swap_eth_percent))
             action = action.replace("{bridge_eth_percent}", str(bridge_eth_percent))
             action = action.replace("{wrap_eth_percent}", str(wrap_eth_percent))
             action = action.replace("{random_virtual_token}", str(random_virtual_token))
+            action = action.replace("{deposit_dollars_of_eth}", str(deposit_dollars_of_eth))
 
             actions.append(action)
 

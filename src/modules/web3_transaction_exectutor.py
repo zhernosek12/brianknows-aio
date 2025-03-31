@@ -236,7 +236,7 @@ class Web3TransactionExecutor:
         hash_ = await self.send_transaction(tx)
         status = await self.wait_for_tx(hash_)
 
-        return status
+        return status, hash_
 
     async def get_transfer_price_wei(self, scale_gas: float = 1.1):
         address = self.account.address
