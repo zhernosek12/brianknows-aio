@@ -57,7 +57,8 @@ class BrianknowsClient:
         message = bytes.fromhex(prefixed_message[2:])
         message_encoded = encode_defunct(message)
 
-        signature = Account.sign_message(message_encoded, private_key=self.transaction_executors['base'].account.key.hex())
+        signature = Account.sign_message(message_encoded,
+                                         private_key=self.transaction_executors['base'].account.key.hex())
         signature_hex = signature.signature.hex()
 
         if signature_hex[:2] != "0x":
@@ -187,6 +188,7 @@ class BrianknowsClient:
             data = result['data']
             data_description = data['description']
             data_steps = data['steps']
+            success = False
 
             for step in data_steps:
                 logger.info("Описания действия от Brianknows: " + data_description)
@@ -205,12 +207,15 @@ class BrianknowsClient:
                             to_addr=Web3.to_checksum_address(step["to"]),
                             amount_eth=Decimal(amount_eth),
                         )
-                        return True
+                        success = True
                     except InsufficientFunds:
                         logger.warning("Недостаточно баланса для выполнения данного действия...")
-                        return False
                     except Exception as e:
                         logger.error("Ошибка при выполнении действия...")
                         logger.exception(e)
 
                     await wait(5)
+
+                await wait(random.randint(6, 23))
+
+            return success
