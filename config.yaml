@@ -7,9 +7,9 @@ proxy_mode: no_proxy  # no_proxy, use_proxy
 rpc_base: https://base.publicnode.com/
 
 swap_eth_amount: [0.0003, 0.0006]
-swap_eth_percent: [15, 35]
-bridge_eth_percent: [10, 20]
-wrap_eth_percent: [10, 20]
+swap_eth_percent: [2, 5]
+bridge_eth_percent: [1, 3]
+wrap_eth_percent: [1, 20]
 
 chains: ["base"]
 
@@ -19,9 +19,11 @@ prompts:
   - "swap {swap_eth_amount} eth for USDC on base chain"
   - "swap {swap_eth_amount} eth for USDT on base chain"
   - "swap {swap_eth_amount} eth for DAI on base chain"
+  - "swap {swap_eth_amount} eth for {random_virtual_token} on base chain"
   - "swap {swap_eth_percent}% eth for USDC on base chain"
   - "swap {swap_eth_percent}% eth for USDT on base chain"
   - "swap {swap_eth_percent}% eth for DAI on base chain"
+  - "swap {swap_eth_percent}% eth for {random_virtual_token} on base chain"
   - "swap all USDC to ETH on base chain"
   - "swap all USDT to ETH on base chain"
   - "swap all DAI to ETH on base chain"
@@ -31,10 +33,9 @@ prompts:
   - "bridge {bridge_eth_percent}% of eth to arbitrum chain"
   - "bridge all eth from optimism to base chain"
   - "bridge all eth from arbitrum to base chain"
-  - "Wrap {wrap_eth_percent}% eth on base chain"
-  - "Unwrap {wrap_eth_percent}% eth on base chain"
+  - "Wrap {wrap_eth_percent}% of my eth"
+  - "Unwrap {wrap_eth_percent}% of my eth"
   - "Unwrap all eth"
-
 
 keys_file_path: keys.txt
 

@@ -40,8 +40,6 @@ async def run_account(
 
             if not is_proxy_valid:
                 logger.error(f"Прикрепленный прокси: {proxy} не рабочий!")
-                # искать другой???
-                #    proxy = await backup_proxies_fetcher.fectch_random_proxy()
                 continue
 
             logger.info(f"Используем прокси {proxy}")

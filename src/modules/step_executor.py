@@ -13,11 +13,13 @@ from src.modules.web3_transaction_exectutor import (
     Web3TransactionExecutorConfig,
 )
 
+from src.modules.wrapper import network_error_handler_decorator
 from src.modules.brianknows_client import BrianknowsClient
 from src.modules.browser_client import BrowserClient
 
 from src.utils.helper import write_file
 from src.utils.progress_bar import wait
+from src.utils.requests import make_async_request
 
 
 class StepExecutorConfig(BaseModel):
@@ -70,6 +72,35 @@ class StepExecutor:
         logger.info(f"Ждем {wait_sec} сек перед {action_name}")
         await wait(wait_sec)
 
+    @network_error_handler_decorator()
+    async def load_virtual_tokens(self, chain, page=1, max_scan_tokens=30):
+        url = f"https://api.virtuals.io/api/virtuals"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        params = {
+            "filters[status]": 2,
+            "filters[chain]": chain.upper(),
+            "sort[0]": "mcapInVirtual:desc",
+            "sort[1]": "createdAt:desc",
+            "populate[0]": "image",
+            "pagination[page]": page,
+            "pagination[pageSize]": max_scan_tokens,
+        }
+        return await make_async_request(url, "GET", headers=headers, params=params)
+
+    async def get_virtual_tokens(self, chain, max_pages=1):
+        virtuals_tokens = []
+        for page in range(max_pages):
+            tokens_data = await self.load_virtual_tokens(chain, page + 1)
+
+            for token in tokens_data['data']:
+                virtuals_tokens.append(Web3.to_checksum_address(token['tokenAddress']))
+
+            await wait(random.randint(3, 9))
+
+        return virtuals_tokens
+
     async def run_step(self, private_key: str) -> None:
         account = self.w3_base.eth.account.from_key(private_key)
         address = account.address
@@ -121,6 +152,10 @@ class StepExecutor:
                     action_name="выполненияем действий",
                 )
 
+        logger.info(f"Загружаем Virtuals tokens...")
+
+        virtuals_tokens = await self.get_virtual_tokens(chain)
+
         logger.info(f"Формируем действия, сеть: {chain}")
 
         actions = []
@@ -132,11 +167,13 @@ class StepExecutor:
             swap_eth_percent = random.randint(*self.config.swap_eth_percent)
             bridge_eth_percent = random.randint(*self.config.bridge_eth_percent)
             wrap_eth_percent = random.randint(*self.config.wrap_eth_percent)
+            random_virtual_token = random.choice(virtuals_tokens)
 
             action = action.replace("{swap_eth_amount}", str(swap_eth_amount))
             action = action.replace("{swap_eth_percent}", str(swap_eth_percent))
             action = action.replace("{bridge_eth_percent}", str(bridge_eth_percent))
             action = action.replace("{wrap_eth_percent}", str(wrap_eth_percent))
+            action = action.replace("{random_virtual_token}", str(random_virtual_token))
 
             actions.append(action)
 
