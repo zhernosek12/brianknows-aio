@@ -208,6 +208,7 @@ class BrianknowsClient:
                             amount_eth=Decimal(amount_eth),
                         )
                         success = True
+                        break
                     except InsufficientFunds:
                         logger.warning("Недостаточно баланса для выполнения данного действия...")
                     except Exception as e:
