@@ -54,6 +54,7 @@ step_executor:
   swap_eth_percent: ${swap_eth_percent}
   bridge_eth_percent: ${bridge_eth_percent}
   wrap_eth_percent: ${wrap_eth_percent}
+  deposit_dollars_of_eth: ${deposit_dollars_of_eth}
 
   wait_before_after_authorization_sec: [5, 11]
   wait_before_action_sec: [12, 55]

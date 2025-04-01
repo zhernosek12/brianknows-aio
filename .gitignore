@@ -10,3 +10,4 @@ utils/__pycache__/
 .keys.txt
 .config.yaml
 results.csv
+start.bat
