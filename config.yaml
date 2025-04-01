@@ -14,39 +14,65 @@ deposit_dollars_of_eth: [1, 3]
 
 chains: ["base"]
 
-actions_repeat: [5, 12]
-
 prompts:
-  - "swap {swap_eth_amount} eth for USDC on base chain"
-  - "swap {swap_eth_amount} eth for USDT on base chain"
-  - "swap {swap_eth_amount} eth for DAI on base chain"
-  - "swap {swap_eth_amount} eth for {random_virtual_token} on base chain"
-  - "swap {swap_eth_percent}% eth for USDC on base chain"
-  - "swap {swap_eth_percent}% eth for USDT on base chain"
-  - "swap {swap_eth_percent}% eth for DAI on base chain"
-  - "swap {swap_eth_percent}% eth for {random_virtual_token} on base chain"
-  - "swap all USDC to ETH on base chain"
-  - "swap all USDT to ETH on base chain"
-  - "swap all DAI to ETH on base chain"
-  - "swap all USDC, USDT, DAI to ETH on base chain"
-  - "bridge {bridge_eth_percent}% of eth to optimism chain and {bridge_eth_percent}% to arbitrum chain"
-  - "bridge {bridge_eth_percent}% of eth to optimism chain"
-  - "bridge {bridge_eth_percent}% of eth to arbitrum chain"
-  - "bridge all eth from optimism to base chain"
-  - "bridge all eth from arbitrum to base chain"
-  - "Wrap {wrap_eth_percent}% of my eth"
-  - "deposit {deposit_dollars_of_eth} dollars of eth into Rocket Pool protocol"
-  - "withdraw all eth from Rocket Pool"
-  - "stake {deposit_dollars_of_eth} dollars of eth on lido protocol"
-  - "unstake all eth from lido protocol"
-  - "Unwrap {wrap_eth_percent}% of my eth"
-  - "Unwrap all eth"
+  - title: "Swaps"
+    enabled: True
+    start: [
+      "swap {swap_eth_amount} eth for USDC on base chain",
+      "swap {swap_eth_amount} eth for USDT on base chain",
+      "swap {swap_eth_amount} eth for DAI on base chain",
+      "swap {swap_eth_percent}% eth for USDC on base chain",
+      "swap {swap_eth_percent}% eth for USDT on base chain",
+      "swap {swap_eth_percent}% eth for DAI on base chain",
+      "swap {swap_eth_percent}% eth for {random_virtual_token} on base chain",
+      "swap {swap_eth_percent}% eth for USDT on base chain"
+    ]
+    end: [
+      "swap all USDC to ETH on base chain",
+      "swap all USDT to ETH on base chain",
+      "swap all DAI to ETH on base chain",
+      "swap all USDC, USDT, DAI to ETH on base chain",
+      "swap all {random_virtual_token} to ETH on base chain",
+    ]
+
+  - title: "Bridge"
+    enabled: True
+    start: [
+      "bridge {bridge_eth_percent}% of eth to optimism chain and {bridge_eth_percent}% to arbitrum chain",
+      "bridge {bridge_eth_percent}% of eth to optimism chain",
+      "bridge {bridge_eth_percent}% of eth to arbitrum chain"
+    ]
+    end: [
+      "bridge 98% eth from optimism to base chain",
+      "bridge 98% eth from arbitrum to base chain"
+    ]
+
+  - title: "Deposit"
+    enabled: True
+    start: [
+      "deposit {deposit_dollars_of_eth} dollars of eth into Rocket Pool protocol",
+      "stake {deposit_dollars_of_eth} dollars of eth on lido protocol"
+    ]
+    end: [
+      "withdraw all eth from Rocket Pool",
+      "unstake all eth from lido protocol"
+    ]
+
+  - title: "Wraps"
+    enabled: True
+    start: [
+      "Wrap {wrap_eth_percent}% of my eth",
+      "Unwrap {wrap_eth_percent}% of my eth"
+    ]
+    end: [
+      "Unwrap all eth"
+    ]
+
 
 keys_file_path: keys.txt
 
 step_executor:
   rpc_base: ${rpc_base}
-  actions_repeat: ${actions_repeat}
   prompts: ${prompts}
   chains: ${chains}
 

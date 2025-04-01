@@ -22,11 +22,17 @@ from src.utils.progress_bar import wait
 from src.utils.requests import make_async_request
 
 
+class PromptConfig(BaseModel):
+    title: str
+    enabled: bool
+    start: List
+    end: List
+
+
 class StepExecutorConfig(BaseModel):
     rpc_base: str
 
-    actions_repeat: tuple[int, int]
-    prompts: List
+    prompts: List[PromptConfig]
     chains: List
 
     swap_eth_amount: tuple[float, float]
@@ -103,6 +109,7 @@ class StepExecutor:
         return virtuals_tokens
 
     async def run_step(self, private_key: str) -> None:
+
         account = self.w3_base.eth.account.from_key(private_key)
         address = account.address
 
@@ -157,30 +164,48 @@ class StepExecutor:
 
         virtuals_tokens = await self.get_virtual_tokens(chain)
 
-        logger.info(f"Формируем действия, сеть: {chain}")
+        logger.info(f"Приступаем к формированию действий, сеть: {chain}")
 
         actions = []
 
-        for _ in range(random.randint(*self.config.actions_repeat)):
-            action = random.choice(self.config.prompts)
+        prompts = self.config.prompts
 
-            swap_eth_amount = round(random.uniform(*self.config.swap_eth_amount), 6)
-            swap_eth_percent = random.randint(*self.config.swap_eth_percent)
-            bridge_eth_percent = random.randint(*self.config.bridge_eth_percent)
-            wrap_eth_percent = random.randint(*self.config.wrap_eth_percent)
-            random_virtual_token = random.choice(virtuals_tokens)
-            deposit_dollars_of_eth = random.randint(*self.config.deposit_dollars_of_eth)
+        random.shuffle(prompts)
 
-            action = action.replace("{swap_eth_amount}", str(swap_eth_amount))
-            action = action.replace("{swap_eth_percent}", str(swap_eth_percent))
-            action = action.replace("{bridge_eth_percent}", str(bridge_eth_percent))
-            action = action.replace("{wrap_eth_percent}", str(wrap_eth_percent))
-            action = action.replace("{random_virtual_token}", str(random_virtual_token))
-            action = action.replace("{deposit_dollars_of_eth}", str(deposit_dollars_of_eth))
+        for prompt in prompts:
+            if prompt.enabled:
+                start_prompt = random.choice(prompt.start)
+                end_prompt = random.choice(prompt.end)
 
-            actions.append(action)
+                swap_eth_amount = round(random.uniform(*self.config.swap_eth_amount), 6)
+                swap_eth_percent = random.randint(*self.config.swap_eth_percent)
+                bridge_eth_percent = random.randint(*self.config.bridge_eth_percent)
+                wrap_eth_percent = random.randint(*self.config.wrap_eth_percent)
+                random_virtual_token = random.choice(virtuals_tokens)
+                deposit_dollars_of_eth = random.randint(*self.config.deposit_dollars_of_eth)
 
-        random.shuffle(actions)
+                action_start = start_prompt
+
+                action_start = action_start.replace("{swap_eth_amount}", str(swap_eth_amount))
+                action_start = action_start.replace("{swap_eth_percent}", str(swap_eth_percent))
+                action_start = action_start.replace("{bridge_eth_percent}", str(bridge_eth_percent))
+                action_start = action_start.replace("{wrap_eth_percent}", str(wrap_eth_percent))
+                action_start = action_start.replace("{random_virtual_token}", str(random_virtual_token))
+                action_start = action_start.replace("{deposit_dollars_of_eth}", str(deposit_dollars_of_eth))
+
+                action_end = end_prompt
+
+                action_end = action_end.replace("{swap_eth_amount}", str(swap_eth_amount))
+                action_end = action_end.replace("{swap_eth_percent}", str(swap_eth_percent))
+                action_end = action_end.replace("{bridge_eth_percent}", str(bridge_eth_percent))
+                action_end = action_end.replace("{wrap_eth_percent}", str(wrap_eth_percent))
+                action_end = action_end.replace("{random_virtual_token}", str(random_virtual_token))
+                action_end = action_end.replace("{deposit_dollars_of_eth}", str(deposit_dollars_of_eth))
+
+                logger.info(f"- {prompt.title}: '{action_start}' и '{action_end}'.")
+
+                actions.append(action_start)
+                actions.append(action_end)
 
         for action in actions:
             logger.info(f"Запускаем действие '{action}'...")

@@ -55,7 +55,7 @@ async def run_account(
         #    logger.warning("Кошелек отработан, пропускаем его и приступаем к следующему...")
         #    continue
         except Exception as e:
-            logger.exception(e)
+            logger.error("Ошибка при отработке кошелька: " + str(e))
             continue
 
         step_executor.cleanup_w3()
